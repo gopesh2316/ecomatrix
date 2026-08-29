@@ -11,7 +11,8 @@
   <!-- Google Fonts (Inter) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
     rel="stylesheet">
 
   <!-- FontAwesome Icons -->
@@ -265,14 +266,12 @@
            VIEW 2: TEST - ECONOMICS
            ==================================================================== -->
       <div id="view-test-economics" class="app-view">
-        
-        <!-- ====== PRACTICE WIZARD CARD ====== -->
-        <div id="econ-practice-wizard" class="practice-wizard-card">
-          
-          <!-- Header with Exit to Dashboard & Squeezed Stepper Progress Bar -->
-          <div class="test-focus-header">
-            <button class="btn-exit-focus" id="btn-exit-econ-focus"><i class="fa-solid fa-arrow-left"></i> Exit to Dashboard</button>
-            
+
+        <!-- Header with Exit to Dashboard & Squeezed Stepper Progress Bar (Full Width Screen Border) -->
+        <div class="test-focus-header">
+          <div class="test-focus-header-inner">
+            <button class="btn-exit-focus" id="btn-exit-econ-focus"><i class="fa-solid fa-arrow-left"></i> Exit</button>
+
             <div class="stepper-squeeze-wrap">
               <div class="stepper-squeeze-info">
                 <span class="step-squeeze-title" id="econ-step-title">Step 1: Select Chapters</span>
@@ -288,17 +287,22 @@
               </div>
             </div>
           </div>
+        </div>
+
+        <!-- ====== PRACTICE WIZARD CARD ====== -->
+        <div id="econ-practice-wizard" class="practice-wizard-card">
 
           <!-- Wizard Body with 6-Slide Track -->
           <div class="wizard-body wizard-slider-wrapper">
             <div class="wizard-slider-track slide-step-1" id="wizard-slider-track">
-              
+
               <!-- STEP 1: CHAPTER SELECTION -->
               <div class="wizard-step-panel active-slide" id="wizard-step-1">
                 <div class="step-section-header">
                   <div>
                     <h3>Select chapters</h3>
-                    <p style="font-size:0.85rem; color:var(--text-muted); margin-top:2px;">Choose one or more chapters for your economics practice</p>
+                    <p style="font-size:0.85rem; color:var(--text-muted); margin-top:2px;">Choose one or more chapters
+                      for your economics practice</p>
                   </div>
                   <div class="chapter-badge-group">
                     <button class="chapter-toggle-all-btn" id="chapter-toggle-all">Select All</button>
@@ -415,7 +419,8 @@
                 <div class="step-section-header">
                   <div>
                     <h3>Level of Difficulty</h3>
-                    <p style="font-size:0.85rem; color:var(--text-muted); margin-top:2px;">Choose the complexity of questions for your session</p>
+                    <p style="font-size:0.85rem; color:var(--text-muted); margin-top:2px;">Choose the complexity of
+                      questions for your session</p>
                   </div>
                 </div>
                 <div class="difficulty-slider-container" id="pref-difficulty-container">
@@ -423,11 +428,13 @@
                     <span class="diff-badge-pill diff-mix" id="econ-diff-badge">
                       <i class="fa-solid fa-layer-group"></i> <span id="econ-diff-label">Mix Ques.</span>
                     </span>
-                    <span class="diff-desc-text" id="econ-diff-desc">Balanced combination of all difficulty levels</span>
+                    <span class="diff-desc-text" id="econ-diff-desc">Balanced combination of all difficulty
+                      levels</span>
                   </div>
 
                   <div class="fat-slider-wrapper">
-                    <input type="range" class="difficulty-fat-slider diff-mix" id="econ-difficulty-slider" min="0" max="100" step="0.1" value="100">
+                    <input type="range" class="difficulty-fat-slider diff-mix" id="econ-difficulty-slider" min="0"
+                      max="100" step="0.1" value="100">
                     <div class="fat-slider-track-fill diff-mix" id="econ-slider-track-fill" style="width: 100%;"></div>
                   </div>
 
@@ -442,7 +449,8 @@
                 <div class="step-section-header">
                   <div>
                     <h3>Select Number of Questions</h3>
-                    <p style="font-size:0.85rem; color:var(--text-muted); margin-top:2px;">How many questions would you like to attempt?</p>
+                    <p style="font-size:0.85rem; color:var(--text-muted); margin-top:2px;">How many questions would you
+                      like to attempt?</p>
                   </div>
                 </div>
                 <div class="pref-options-row" id="pref-qcount" style="margin-top: 1.2rem;">
@@ -464,7 +472,13 @@
                   </button>
                 </div>
                 <div class="custom-qcount-input-wrap hidden" id="custom-qcount-wrap">
-                  <input type="number" id="custom-qcount-input" min="5" max="100" placeholder="Enter number (5-100)" class="custom-q-input">
+                  <div class="custom-input-box">
+                    <i class="fa-solid fa-hashtag custom-input-icon"></i>
+                    <input type="number" id="custom-qcount-input" min="5" max="100" placeholder="e.g. 25"
+                      class="custom-q-input">
+                    <span class="custom-input-unit">Questions</span>
+                  </div>
+                  <div class="custom-input-hint"><i class="fa-solid fa-circle-info"></i> Enter any number from 5 to 100</div>
                 </div>
               </div>
 
@@ -473,7 +487,8 @@
                 <div class="step-section-header">
                   <div>
                     <h3>Select Language</h3>
-                    <p style="font-size:0.85rem; color:var(--text-muted); margin-top:2px;">Choose your preferred question language</p>
+                    <p style="font-size:0.85rem; color:var(--text-muted); margin-top:2px;">Choose your preferred
+                      question language</p>
                   </div>
                 </div>
                 <div class="pref-options-row" id="pref-language" style="margin-top: 1.2rem;">
@@ -487,19 +502,31 @@
                 <div class="step-section-header">
                   <div>
                     <h3>Select Mode</h3>
-                    <p style="font-size:0.85rem; color:var(--text-muted); margin-top:2px;">Select how you want to attempt this test</p>
+                    <p style="font-size:0.85rem; color:var(--text-muted); margin-top:2px;">Select how you want to
+                      attempt this test</p>
                   </div>
                 </div>
                 <div class="mode-cards-grid" id="pref-mode" style="margin-top: 1.2rem;">
                   <div class="mode-card active" data-value="practice">
-                    <div class="mode-card-icon"><i class="fa-solid fa-pen-to-square"></i></div>
+                    <div class="mode-card-icon">
+                      <svg class="mode-card-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 20h9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </div>
                     <div class="mode-card-content">
                       <div class="mode-card-title">Practice Mode</div>
                       <div class="mode-card-desc">Review answer explanations after each question</div>
                     </div>
                   </div>
                   <div class="mode-card" data-value="exam">
-                    <div class="mode-card-icon"><i class="fa-solid fa-clipboard-check"></i></div>
+                    <div class="mode-card-icon">
+                      <svg class="mode-card-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <rect x="8" y="2" width="8" height="4" rx="1" ry="1" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M9 14l2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </div>
                     <div class="mode-card-content">
                       <div class="mode-card-title">Exam Mode</div>
                       <div class="mode-card-desc">Timed session with final score report</div>
@@ -523,7 +550,8 @@
                   <div class="summary-grid">
                     <div class="summary-item-card">
                       <span class="summary-item-label">Subject</span>
-                      <span class="summary-item-val"><i class="fa-solid fa-chart-pie" style="color:#7c3aed;"></i> Business Economics</span>
+                      <span class="summary-item-val"><i class="fa-solid fa-chart-pie" style="color:#7c3aed;"></i>
+                        Business Economics</span>
                     </div>
 
                     <div class="summary-item-card">
@@ -587,14 +615,13 @@
            VIEW 3: TEST - QUANTITATIVE
            ==================================================================== -->
       <div id="view-test-quantitative" class="app-view">
-        
-        <!-- ====== QUANTITATIVE PRACTICE WIZARD CARD ====== -->
-        <div id="quant-practice-wizard" class="practice-wizard-card">
-          
-          <!-- Header with Exit to Dashboard & Squeezed Stepper Progress Bar -->
-          <div class="test-focus-header">
-            <button class="btn-exit-focus" id="btn-exit-quant-focus"><i class="fa-solid fa-arrow-left"></i> Exit to Dashboard</button>
-            
+
+        <!-- Header with Exit to Dashboard & Squeezed Stepper Progress Bar (Full Width Screen Border) -->
+        <div class="test-focus-header">
+          <div class="test-focus-header-inner">
+            <button class="btn-exit-focus" id="btn-exit-quant-focus"><i class="fa-solid fa-arrow-left"></i>
+              Exit</button>
+
             <div class="stepper-squeeze-wrap">
               <div class="stepper-squeeze-info">
                 <span class="step-squeeze-title" id="quant-step-title">Step 1: Select Chapters</span>
@@ -610,17 +637,22 @@
               </div>
             </div>
           </div>
+        </div>
+
+        <!-- ====== QUANTITATIVE PRACTICE WIZARD CARD ====== -->
+        <div id="quant-practice-wizard" class="practice-wizard-card">
 
           <!-- Wizard Body with 6-Slide Track -->
           <div class="wizard-body wizard-slider-wrapper">
             <div class="wizard-slider-track slide-step-1" id="quant-wizard-slider-track">
-              
+
               <!-- STEP 1: CHAPTER SELECTION -->
               <div class="wizard-step-panel active-slide" id="quant-wizard-step-1">
                 <div class="step-section-header">
                   <div>
                     <h3>Select chapters</h3>
-                    <p style="font-size:0.85rem; color:var(--text-muted); margin-top:2px;">Choose one or more math chapters for practice</p>
+                    <p style="font-size:0.85rem; color:var(--text-muted); margin-top:2px;">Choose one or more math
+                      chapters for practice</p>
                   </div>
                   <div class="chapter-badge-group">
                     <button class="chapter-toggle-all-btn" id="quant-chapter-toggle-all">Select All</button>
@@ -737,7 +769,8 @@
                 <div class="step-section-header">
                   <div>
                     <h3>Level of Difficulty</h3>
-                    <p style="font-size:0.85rem; color:var(--text-muted); margin-top:2px;">Choose difficulty level for math questions</p>
+                    <p style="font-size:0.85rem; color:var(--text-muted); margin-top:2px;">Choose difficulty level for
+                      math questions</p>
                   </div>
                 </div>
                 <div class="difficulty-slider-container" id="quant-pref-difficulty-container">
@@ -745,11 +778,13 @@
                     <span class="diff-badge-pill diff-mix" id="quant-diff-badge">
                       <i class="fa-solid fa-layer-group"></i> <span id="quant-diff-label">Mix Ques.</span>
                     </span>
-                    <span class="diff-desc-text" id="quant-diff-desc">Balanced combination of all difficulty levels</span>
+                    <span class="diff-desc-text" id="quant-diff-desc">Balanced combination of all difficulty
+                      levels</span>
                   </div>
 
                   <div class="fat-slider-wrapper">
-                    <input type="range" class="difficulty-fat-slider diff-mix" id="quant-difficulty-slider" min="0" max="100" step="0.1" value="100">
+                    <input type="range" class="difficulty-fat-slider diff-mix" id="quant-difficulty-slider" min="0"
+                      max="100" step="0.1" value="100">
                     <div class="fat-slider-track-fill diff-mix" id="quant-slider-track-fill" style="width: 100%;"></div>
                   </div>
 
@@ -764,7 +799,8 @@
                 <div class="step-section-header">
                   <div>
                     <h3>Select Number of Questions</h3>
-                    <p style="font-size:0.85rem; color:var(--text-muted); margin-top:2px;">How many math problems would you like to solve?</p>
+                    <p style="font-size:0.85rem; color:var(--text-muted); margin-top:2px;">How many math problems would
+                      you like to solve?</p>
                   </div>
                 </div>
                 <div class="pref-options-row" id="quant-pref-qcount" style="margin-top: 1.2rem;">
@@ -786,7 +822,13 @@
                   </button>
                 </div>
                 <div class="custom-qcount-input-wrap hidden" id="quant-custom-qcount-wrap">
-                  <input type="number" id="quant-custom-qcount-input" min="5" max="100" placeholder="Enter number (5-100)" class="custom-q-input">
+                  <div class="custom-input-box">
+                    <i class="fa-solid fa-hashtag custom-input-icon"></i>
+                    <input type="number" id="quant-custom-qcount-input" min="5" max="100" placeholder="e.g. 25"
+                      class="custom-q-input">
+                    <span class="custom-input-unit">Questions</span>
+                  </div>
+                  <div class="custom-input-hint"><i class="fa-solid fa-circle-info"></i> Enter any number from 5 to 100</div>
                 </div>
               </div>
 
@@ -795,7 +837,8 @@
                 <div class="step-section-header">
                   <div>
                     <h3>Select Language</h3>
-                    <p style="font-size:0.85rem; color:var(--text-muted); margin-top:2px;">Choose preferred question language</p>
+                    <p style="font-size:0.85rem; color:var(--text-muted); margin-top:2px;">Choose preferred question
+                      language</p>
                   </div>
                 </div>
                 <div class="pref-options-row" id="quant-pref-language" style="margin-top: 1.2rem;">
@@ -809,19 +852,31 @@
                 <div class="step-section-header">
                   <div>
                     <h3>Select Mode</h3>
-                    <p style="font-size:0.85rem; color:var(--text-muted); margin-top:2px;">Select how you want to attempt this math test</p>
+                    <p style="font-size:0.85rem; color:var(--text-muted); margin-top:2px;">Select how you want to
+                      attempt this math test</p>
                   </div>
                 </div>
                 <div class="mode-cards-grid" id="quant-pref-mode" style="margin-top: 1.2rem;">
                   <div class="mode-card active" data-value="practice">
-                    <div class="mode-card-icon"><i class="fa-solid fa-pen-to-square"></i></div>
+                    <div class="mode-card-icon">
+                      <svg class="mode-card-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 20h9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </div>
                     <div class="mode-card-content">
                       <div class="mode-card-title">Practice Mode</div>
                       <div class="mode-card-desc">Review step-by-step math solutions after each question</div>
                     </div>
                   </div>
                   <div class="mode-card" data-value="exam">
-                    <div class="mode-card-icon"><i class="fa-solid fa-clipboard-check"></i></div>
+                    <div class="mode-card-icon">
+                      <svg class="mode-card-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <rect x="8" y="2" width="8" height="4" rx="1" ry="1" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M9 14l2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </div>
                     <div class="mode-card-content">
                       <div class="mode-card-title">Exam Mode</div>
                       <div class="mode-card-desc">Timed session with final score report</div>
@@ -845,7 +900,8 @@
                   <div class="summary-grid">
                     <div class="summary-item-card">
                       <span class="summary-item-label">Subject</span>
-                      <span class="summary-item-val"><i class="fa-solid fa-calculator" style="color:#3b82f6;"></i> Quantitative Aptitude</span>
+                      <span class="summary-item-val"><i class="fa-solid fa-calculator" style="color:#3b82f6;"></i>
+                        Quantitative Aptitude</span>
                     </div>
 
                     <div class="summary-item-card">
@@ -881,7 +937,8 @@
                     </div>
                   </div>
 
-                  <button class="btn-start-test-cta" id="quant-btn-start-test-cta" style="background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);">
+                  <button class="btn-start-test-cta" id="quant-btn-start-test-cta"
+                    style="background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);">
                     <i class="fa-solid fa-play"></i> Start Math Test Now
                   </button>
                 </div>

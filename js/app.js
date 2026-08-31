@@ -618,12 +618,29 @@ document.addEventListener("DOMContentLoaded", () => {
       btnExitEcon.addEventListener("click", () => navigateToView("home"));
     }
 
+    let econTitleBlurTimeout = null;
+
+    function setBtnTextSmooth(btn, targetText) {
+      if (!btn) return;
+      if (btn.textContent.trim() !== targetText.trim()) {
+        btn.classList.add("text-blurring");
+        setTimeout(() => {
+          btn.textContent = targetText;
+          btn.classList.remove("text-blurring");
+        }, 100);
+      } else {
+        btn.textContent = targetText;
+      }
+    }
+
     // Update Wizard Stepper & Panels
-    function updateWizardUI() {
-      // Scroll page up to top when changing wizard step
-      const mainContentArea = document.querySelector(".main-content-area");
-      if (mainContentArea) {
-        mainContentArea.scrollTop = 0;
+    function updateWizardUI(shouldScroll = false) {
+      // Scroll page up to top only when changing wizard step
+      if (shouldScroll) {
+        const mainContentArea = document.querySelector(".main-content-area");
+        if (mainContentArea) {
+          mainContentArea.scrollTop = 0;
+        }
       }
 
       // Update slider track class for smooth sliding transition
@@ -634,9 +651,22 @@ document.addEventListener("DOMContentLoaded", () => {
       // Squeezed Header Titles
       const stepTitleEl = document.getElementById("econ-step-title");
       const stepBadgeEl = document.getElementById("econ-step-badge");
+      const newTitle = STEP_TITLES[currentStep] || `Step ${currentStep}`;
+      const newBadge = `${currentStep} of 6`;
 
-      if (stepTitleEl) stepTitleEl.textContent = STEP_TITLES[currentStep] || `Step ${currentStep}`;
-      if (stepBadgeEl) stepBadgeEl.textContent = `${currentStep} of 6`;
+      if (stepTitleEl) {
+        const squeezeInfo = stepTitleEl.closest(".stepper-squeeze-info");
+        if (squeezeInfo && stepTitleEl.textContent !== newTitle) {
+          squeezeInfo.classList.remove("is-animating");
+          stepTitleEl.textContent = newTitle;
+          if (stepBadgeEl) stepBadgeEl.textContent = newBadge;
+          void squeezeInfo.offsetWidth;
+          squeezeInfo.classList.add("is-animating");
+        } else {
+          stepTitleEl.textContent = newTitle;
+          if (stepBadgeEl) stepBadgeEl.textContent = newBadge;
+        }
+      }
 
       // Divided Segmented Progress Bar Updates
       const econProgressBar = document.getElementById("econ-progress-bar");
@@ -675,7 +705,7 @@ document.addEventListener("DOMContentLoaded", () => {
         btnPrev.classList.add("btn-hidden");
         btnNext.style.display = "inline-flex";
         btnNext.classList.remove("btn-hidden");
-        btnNext.textContent = "Next";
+        setBtnTextSmooth(btnNext, "Next");
         if (selectedChapters.size > 0) {
           btnNext.disabled = false;
           btnNext.style.opacity = "1";
@@ -693,18 +723,22 @@ document.addEventListener("DOMContentLoaded", () => {
         btnNext.disabled = false;
         btnNext.style.opacity = "1";
         btnNext.style.pointerEvents = "auto";
-        btnNext.textContent = "Next";
+        setBtnTextSmooth(btnNext, "Next");
       } else if (currentStep === 6) {
         btnPrev.style.display = "inline-flex";
         btnPrev.classList.remove("btn-hidden");
         btnNext.style.display = "inline-flex";
-        btnNext.classList.add("btn-hidden");
+        btnNext.classList.remove("btn-hidden");
+        btnNext.disabled = false;
+        btnNext.style.opacity = "1";
+        btnNext.style.pointerEvents = "auto";
+        setBtnTextSmooth(btnNext, "Start now");
         renderSummaryStep();
       }
 
       if (wizardFooter) {
         wizardFooter.style.display = "flex";
-        wizardFooter.classList.toggle("single-btn", currentStep === 1 || currentStep === 6);
+        wizardFooter.classList.toggle("single-btn", currentStep === 1);
         wizardFooter.classList.remove("animating");
         void wizardFooter.offsetWidth;
         wizardFooter.classList.add("animating");
@@ -797,6 +831,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       btns.forEach((btn) => {
         btn.addEventListener("click", () => {
+          if (btn.disabled || btn.classList.contains("disabled")) return;
           btns.forEach((b) => b.classList.remove("active"));
           btn.classList.add("active");
           const val = btn.getAttribute("data-value");
@@ -932,7 +967,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (currentStep < 6) {
         if (currentStep === 1 && selectedChapters.size === 0) return;
         currentStep++;
-        updateWizardUI();
+        updateWizardUI(true);
       } else if (currentStep === 6) {
         startPracticeTestSession();
       }
@@ -941,7 +976,7 @@ document.addEventListener("DOMContentLoaded", () => {
     btnPrev.addEventListener("click", () => {
       if (currentStep > 1) {
         currentStep--;
-        updateWizardUI();
+        updateWizardUI(true);
       }
     });
 
@@ -958,8 +993,15 @@ document.addEventListener("DOMContentLoaded", () => {
     let activeTestQuestions = [];
     let currentQIndex = 0;
     let userAnswers = {};
+    let visitedQuestions = new Set();
     let testTimerInterval = null;
     let secondsRemaining = 0;
+
+    function getChapterName(chId, isQuant = false) {
+      const stepId = isQuant ? "quant-wizard-step-1" : "wizard-step-1";
+      const card = document.querySelector(`#${stepId} .chapter-card[data-chapter-id="${chId}"] .chapter-title`);
+      return card ? card.textContent.trim() : (isQuant ? "Quantitative Aptitude" : "Business Economics");
+    }
 
     function startPracticeTestSession() {
       // Gather questions from selected chapters
@@ -968,7 +1010,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
       chList.forEach((chId) => {
         if (QUESTION_BANK[chId]) {
-          activeTestQuestions.push(...QUESTION_BANK[chId]);
+          const chName = getChapterName(chId, false);
+          QUESTION_BANK[chId].forEach((q) => {
+            activeTestQuestions.push({
+              ...q,
+              chId: chId,
+              chName: chName
+            });
+          });
         }
       });
 
@@ -979,10 +1028,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
       currentQIndex = 0;
       userAnswers = {};
+      visitedQuestions = new Set();
+      visitedQuestions.add(0);
 
-      // Hide wizard, show session
+      // Hide wizard and focus header, show session
       practiceWizardCard.classList.add("hidden");
       testSessionContainer.classList.remove("hidden");
+      const econFocusHeader = document.querySelector("#view-test-economics .test-focus-header");
+      if (econFocusHeader) econFocusHeader.classList.add("hidden");
 
       if (preferenceState.mode === "exam") {
         secondsRemaining = activeTestQuestions.length * 60; // 1 min per Q
@@ -1013,81 +1066,144 @@ document.addEventListener("DOMContentLoaded", () => {
       const qData = activeTestQuestions[currentQIndex];
       const isExam = preferenceState.mode === "exam";
       const totalQ = activeTestQuestions.length;
-      const progressPercent = Math.round(((currentQIndex + 1) / totalQ) * 100);
+      visitedQuestions.add(currentQIndex);
+
+      let answeredCount = 0;
+      let skippedCount = 0;
+      let notVisitedCount = 0;
+
+      for (let i = 0; i < totalQ; i++) {
+        if (userAnswers[i] !== undefined) {
+          answeredCount++;
+        } else if (visitedQuestions.has(i)) {
+          skippedCount++;
+        } else {
+          notVisitedCount++;
+        }
+      }
 
       let html = `
-        <div class="test-session-header">
-          <div class="test-session-meta">
-            <span class="test-mode-badge">${isExam ? "Exam Mode" : "Practice Mode"}</span>
-            ${isExam ? `
-              <div class="test-timer-badge">
-                <i class="fa-regular fa-clock"></i>
-                <span id="test-timer-val">--:--</span>
-              </div>
-            ` : ""}
-          </div>
-          <button class="test-exit-btn" id="test-exit-btn"><i class="fa-solid fa-xmark"></i> Exit Test</button>
-        </div>
-
-        <div class="test-progress-bar-wrap">
-          <div class="test-progress-bar-fill" style="width: ${progressPercent}%;"></div>
-        </div>
-
-        <div class="test-question-box">
-          <div class="test-question-number">Question ${currentQIndex + 1} of ${totalQ}</div>
-          <div class="test-question-text">${qData.q}</div>
-
-          <div class="test-options-grid">
-            ${qData.opts.map((opt, idx) => {
-              const selectedIdx = userAnswers[currentQIndex];
-              let optionClass = "test-option-btn";
-              if (selectedIdx !== undefined) {
-                if (isExam) {
-                  if (selectedIdx === idx) optionClass += " selected-correct";
-                } else {
-                  if (idx === qData.correct) optionClass += " selected-correct";
-                  else if (selectedIdx === idx) optionClass += " selected-wrong";
-                }
-              }
-
-              return `
-                <button class="${optionClass}" data-opt-idx="${idx}">
-                  <span class="test-option-prefix">${String.fromCharCode(65 + idx)}</span>
-                  <span>${opt}</span>
-                </button>
-              `;
-            }).join("")}
-          </div>
-
-          ${!isExam && userAnswers[currentQIndex] !== undefined ? `
-            <div class="test-feedback-box ${userAnswers[currentQIndex] === qData.correct ? "correct" : "wrong"}">
-              <strong>${userAnswers[currentQIndex] === qData.correct ? "✓ Correct Answer!" : "✗ Incorrect"}</strong>
-              <p style="margin-top: 4px;">${qData.exp}</p>
+        <div class="live-test-wrapper">
+          <div class="live-test-header">
+            <div class="live-test-header-left">
+              <div class="live-test-counter-num">${currentQIndex + 1} of ${totalQ}</div>
+              <div class="live-test-chapter-name">${qData.chName || "Business Economics"}</div>
             </div>
-          ` : ""}
-        </div>
+            <div class="live-test-header-right">
+              ${isExam ? `
+                <div class="live-test-timer-badge">
+                  <i class="fa-regular fa-clock"></i>
+                  <span id="test-timer-val">--:--</span>
+                </div>
+              ` : ""}
+              <button class="btn-leave-test" id="test-exit-btn">Leave</button>
+            </div>
+          </div>
 
-        <div class="test-nav-actions">
-          <button class="btn-wizard btn-prev" id="test-btn-prev" ${currentQIndex === 0 ? "disabled" : ""}>Previous</button>
-          ${currentQIndex < totalQ - 1 ? `
-            <button class="btn-wizard btn-next" id="test-btn-next">Next Question</button>
-          ` : `
-            <button class="btn-wizard btn-next" id="test-btn-finish">Submit & View Results</button>
-          `}
+          <div class="live-test-body">
+            <div class="live-test-main-col">
+              <div class="live-q-meta-row">
+                <div class="live-q-num-badge">${currentQIndex + 1}</div>
+                <div class="live-q-type-pill">Type : Single Choice Question</div>
+                <div class="live-q-menu-icon"><i class="fa-solid fa-ellipsis-vertical"></i></div>
+              </div>
+
+              <div class="live-q-text">${qData.q}</div>
+
+              <div class="live-options-list">
+                ${qData.opts.map((opt, idx) => {
+                  const selectedIdx = userAnswers[currentQIndex];
+                  const isSelected = selectedIdx === idx;
+                  let optionClass = "live-option-card" + (isSelected ? " selected" : "");
+                  if (selectedIdx !== undefined && !isExam) {
+                    if (idx === qData.correct) optionClass += " option-correct";
+                    else if (isSelected) optionClass += " option-wrong";
+                  }
+
+                  return `
+                    <div class="${optionClass}" data-opt-idx="${idx}">
+                      <div class="live-option-num">${idx + 1}</div>
+                      <div class="live-option-text">${opt}</div>
+                      <div class="live-option-radio">
+                        <span class="radio-outer"><span class="radio-inner"></span></span>
+                      </div>
+                    </div>
+                  `;
+                }).join("")}
+              </div>
+
+              ${!isExam && userAnswers[currentQIndex] !== undefined ? `
+                <div class="live-feedback-box ${userAnswers[currentQIndex] === qData.correct ? "correct" : "wrong"}">
+                  <strong>${userAnswers[currentQIndex] === qData.correct ? "✓ Correct Answer!" : "✗ Incorrect"}</strong>
+                  <p style="margin-top: 4px;">${qData.exp}</p>
+                </div>
+              ` : ""}
+
+              <div class="live-test-footer">
+                <button class="btn-live-prev" id="test-btn-prev" ${currentQIndex === 0 ? "disabled" : ""}>Previous</button>
+                <button class="btn-live-next" id="test-btn-next">${currentQIndex === totalQ - 1 ? "Submit & View Results" : "Save & Next"}</button>
+              </div>
+            </div>
+
+            <div class="live-test-sidebar">
+              <div class="palette-summary-box">
+                <div class="palette-status-pill answered">
+                  <span class="status-num">${answeredCount}</span>
+                  <span>Answered</span>
+                </div>
+                <div class="palette-status-pill skipped">
+                  <span class="status-num">${skippedCount}</span>
+                  <span>Skipped</span>
+                </div>
+                <div class="palette-status-pill not-visited">
+                  <span class="status-num">${notVisitedCount}</span>
+                  <span>Not Visited</span>
+                </div>
+              </div>
+
+              <div class="palette-grid-container">
+                ${Array.from({ length: totalQ }, (_, i) => {
+                  let btnClass = "palette-grid-btn";
+                  if (i === currentQIndex) btnClass += " active-current";
+                  if (userAnswers[i] !== undefined) btnClass += " status-answered";
+                  else if (visitedQuestions.has(i)) btnClass += " status-skipped";
+                  else btnClass += " status-not-visited";
+
+                  return `
+                    <button class="${btnClass}" data-q-idx="${i}">
+                      <span class="palette-btn-num">${i + 1}</span>
+                      <span class="palette-btn-dot"></span>
+                    </button>
+                  `;
+                }).join("")}
+              </div>
+            </div>
+          </div>
         </div>
       `;
 
       testSessionContainer.innerHTML = html;
 
       // Event Listeners for Session Controls
-      document.getElementById("test-exit-btn").addEventListener("click", exitTestSession);
+      const exitBtn = document.getElementById("test-exit-btn");
+      if (exitBtn) exitBtn.addEventListener("click", exitTestSession);
 
-      const optBtns = testSessionContainer.querySelectorAll(".test-option-btn");
-      optBtns.forEach((btn) => {
-        btn.addEventListener("click", () => {
+      const optBtns = testSessionContainer.querySelectorAll(".live-option-card");
+      optBtns.forEach((card) => {
+        card.addEventListener("click", () => {
           if (!isExam && userAnswers[currentQIndex] !== undefined) return;
-          const optIdx = parseInt(btn.getAttribute("data-opt-idx"));
+          const optIdx = parseInt(card.getAttribute("data-opt-idx"));
           userAnswers[currentQIndex] = optIdx;
+          renderCurrentQuestion();
+        });
+      });
+
+      const paletteBtns = testSessionContainer.querySelectorAll(".palette-grid-btn");
+      paletteBtns.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const qIdx = parseInt(btn.getAttribute("data-q-idx"));
+          currentQIndex = qIdx;
+          visitedQuestions.add(currentQIndex);
           renderCurrentQuestion();
         });
       });
@@ -1097,6 +1213,7 @@ document.addEventListener("DOMContentLoaded", () => {
         navPrev.addEventListener("click", () => {
           if (currentQIndex > 0) {
             currentQIndex--;
+            visitedQuestions.add(currentQIndex);
             renderCurrentQuestion();
           }
         });
@@ -1107,14 +1224,12 @@ document.addEventListener("DOMContentLoaded", () => {
         navNext.addEventListener("click", () => {
           if (currentQIndex < totalQ - 1) {
             currentQIndex++;
+            visitedQuestions.add(currentQIndex);
             renderCurrentQuestion();
+          } else {
+            finishTestSession();
           }
         });
-      }
-
-      const navFinish = document.getElementById("test-btn-finish");
-      if (navFinish) {
-        navFinish.addEventListener("click", finishTestSession);
       }
     }
 
@@ -1122,6 +1237,8 @@ document.addEventListener("DOMContentLoaded", () => {
       if (testTimerInterval) clearInterval(testTimerInterval);
       testSessionContainer.classList.add("hidden");
       practiceWizardCard.classList.remove("hidden");
+      const econFocusHeader = document.querySelector("#view-test-economics .test-focus-header");
+      if (econFocusHeader) econFocusHeader.classList.remove("hidden");
     }
 
     function finishTestSession() {
@@ -1252,11 +1369,15 @@ document.addEventListener("DOMContentLoaded", () => {
       quantBtnExit.addEventListener("click", () => navigateToView("home"));
     }
 
-    function updateQuantWizardUI() {
-      // Scroll page up to top when changing quant wizard step
-      const mainContentArea = document.querySelector(".main-content-area");
-      if (mainContentArea) {
-        mainContentArea.scrollTop = 0;
+    let quantTitleBlurTimeout = null;
+
+    function updateQuantWizardUI(shouldScroll = false) {
+      // Scroll page up to top only when changing quant wizard step
+      if (shouldScroll) {
+        const mainContentArea = document.querySelector(".main-content-area");
+        if (mainContentArea) {
+          mainContentArea.scrollTop = 0;
+        }
       }
 
       if (quantSliderTrack) {
@@ -1266,9 +1387,22 @@ document.addEventListener("DOMContentLoaded", () => {
       // Squeezed Header Titles
       const stepTitleEl = document.getElementById("quant-step-title");
       const stepBadgeEl = document.getElementById("quant-step-badge");
+      const newTitle = STEP_TITLES[quantCurrentStep] || `Step ${quantCurrentStep}`;
+      const newBadge = `${quantCurrentStep} of 6`;
 
-      if (stepTitleEl) stepTitleEl.textContent = STEP_TITLES[quantCurrentStep] || `Step ${quantCurrentStep}`;
-      if (stepBadgeEl) stepBadgeEl.textContent = `${quantCurrentStep} of 6`;
+      if (stepTitleEl) {
+        const squeezeInfo = stepTitleEl.closest(".stepper-squeeze-info");
+        if (squeezeInfo && stepTitleEl.textContent !== newTitle) {
+          squeezeInfo.classList.remove("is-animating");
+          stepTitleEl.textContent = newTitle;
+          if (stepBadgeEl) stepBadgeEl.textContent = newBadge;
+          void squeezeInfo.offsetWidth;
+          squeezeInfo.classList.add("is-animating");
+        } else {
+          stepTitleEl.textContent = newTitle;
+          if (stepBadgeEl) stepBadgeEl.textContent = newBadge;
+        }
+      }
 
       // Divided Segmented Progress Bar Updates
       const quantProgressBar = document.getElementById("quant-progress-bar");
@@ -1306,7 +1440,7 @@ document.addEventListener("DOMContentLoaded", () => {
         quantBtnPrev.classList.add("btn-hidden");
         quantBtnNext.style.display = "inline-flex";
         quantBtnNext.classList.remove("btn-hidden");
-        quantBtnNext.textContent = "Next";
+        setBtnTextSmooth(quantBtnNext, "Next");
         if (quantSelectedChapters.size > 0) {
           quantBtnNext.disabled = false;
           quantBtnNext.style.opacity = "1";
@@ -1324,18 +1458,22 @@ document.addEventListener("DOMContentLoaded", () => {
         quantBtnNext.disabled = false;
         quantBtnNext.style.opacity = "1";
         quantBtnNext.style.pointerEvents = "auto";
-        quantBtnNext.textContent = "Next";
+        setBtnTextSmooth(quantBtnNext, "Next");
       } else if (quantCurrentStep === 6) {
         quantBtnPrev.style.display = "inline-flex";
         quantBtnPrev.classList.remove("btn-hidden");
         quantBtnNext.style.display = "inline-flex";
-        quantBtnNext.classList.add("btn-hidden");
+        quantBtnNext.classList.remove("btn-hidden");
+        quantBtnNext.disabled = false;
+        quantBtnNext.style.opacity = "1";
+        quantBtnNext.style.pointerEvents = "auto";
+        setBtnTextSmooth(quantBtnNext, "Start now");
         renderQuantSummaryStep();
       }
 
       if (wizardFooter) {
         wizardFooter.style.display = "flex";
-        wizardFooter.classList.toggle("single-btn", quantCurrentStep === 1 || quantCurrentStep === 6);
+        wizardFooter.classList.toggle("single-btn", quantCurrentStep === 1);
         wizardFooter.classList.remove("animating");
         void wizardFooter.offsetWidth;
         wizardFooter.classList.add("animating");
@@ -1425,6 +1563,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       btns.forEach((btn) => {
         btn.addEventListener("click", () => {
+          if (btn.disabled || btn.classList.contains("disabled")) return;
           btns.forEach((b) => b.classList.remove("active"));
           btn.classList.add("active");
           const val = btn.getAttribute("data-value");
@@ -1461,7 +1600,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (quantCurrentStep < 6) {
         if (quantCurrentStep === 1 && quantSelectedChapters.size === 0) return;
         quantCurrentStep++;
-        updateQuantWizardUI();
+        updateQuantWizardUI(true);
       } else if (quantCurrentStep === 6) {
         startQuantPracticeTestSession();
       }
@@ -1470,7 +1609,7 @@ document.addEventListener("DOMContentLoaded", () => {
     quantBtnPrev.addEventListener("click", () => {
       if (quantCurrentStep > 1) {
         quantCurrentStep--;
-        updateQuantWizardUI();
+        updateQuantWizardUI(true);
       }
     });
 
@@ -1488,6 +1627,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let activeQuantQuestions = [];
     let quantCurrentQIndex = 0;
     let quantUserAnswers = {};
+    let quantVisitedQuestions = new Set();
     let quantTimerInterval = null;
     let quantSecondsRemaining = 0;
 
@@ -1497,7 +1637,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
       chList.forEach((chId) => {
         if (QUANT_QUESTION_BANK[chId]) {
-          activeQuantQuestions.push(...QUANT_QUESTION_BANK[chId]);
+          const chName = getChapterName(chId, true);
+          QUANT_QUESTION_BANK[chId].forEach((q) => {
+            activeQuantQuestions.push({
+              ...q,
+              chId: chId,
+              chName: chName
+            });
+          });
         }
       });
 
@@ -1507,9 +1654,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
       quantCurrentQIndex = 0;
       quantUserAnswers = {};
+      quantVisitedQuestions = new Set();
+      quantVisitedQuestions.add(0);
 
       quantPracticeWizardCard.classList.add("hidden");
       quantTestSessionContainer.classList.remove("hidden");
+      const quantFocusHeader = document.querySelector("#view-test-quantitative .test-focus-header");
+      if (quantFocusHeader) quantFocusHeader.classList.add("hidden");
 
       if (quantPrefState.mode === "exam") {
         quantSecondsRemaining = activeQuantQuestions.length * 90; // 1.5 min per math Q
@@ -1540,80 +1691,143 @@ document.addEventListener("DOMContentLoaded", () => {
       const qData = activeQuantQuestions[quantCurrentQIndex];
       const isExam = quantPrefState.mode === "exam";
       const totalQ = activeQuantQuestions.length;
-      const progressPercent = Math.round(((quantCurrentQIndex + 1) / totalQ) * 100);
+      quantVisitedQuestions.add(quantCurrentQIndex);
+
+      let answeredCount = 0;
+      let skippedCount = 0;
+      let notVisitedCount = 0;
+
+      for (let i = 0; i < totalQ; i++) {
+        if (quantUserAnswers[i] !== undefined) {
+          answeredCount++;
+        } else if (quantVisitedQuestions.has(i)) {
+          skippedCount++;
+        } else {
+          notVisitedCount++;
+        }
+      }
 
       let html = `
-        <div class="test-session-header">
-          <div class="test-session-meta">
-            <span class="test-mode-badge" style="background:#dbeafe; color:#1d4ed8;">Math - ${isExam ? "Exam Mode" : "Practice Mode"}</span>
-            ${isExam ? `
-              <div class="test-timer-badge">
-                <i class="fa-regular fa-clock"></i>
-                <span id="quant-test-timer-val">--:--</span>
-              </div>
-            ` : ""}
-          </div>
-          <button class="test-exit-btn" id="quant-test-exit-btn"><i class="fa-solid fa-xmark"></i> Exit Test</button>
-        </div>
-
-        <div class="test-progress-bar-wrap">
-          <div class="test-progress-bar-fill" style="width: ${progressPercent}%; background:#2563eb;"></div>
-        </div>
-
-        <div class="test-question-box">
-          <div class="test-question-number">Question ${quantCurrentQIndex + 1} of ${totalQ}</div>
-          <div class="test-question-text" style="font-weight: 600;">${qData.q}</div>
-
-          <div class="test-options-grid">
-            ${qData.opts.map((opt, idx) => {
-              const selectedIdx = quantUserAnswers[quantCurrentQIndex];
-              let optionClass = "test-option-btn";
-              if (selectedIdx !== undefined) {
-                if (isExam) {
-                  if (selectedIdx === idx) optionClass += " selected-correct";
-                } else {
-                  if (idx === qData.correct) optionClass += " selected-correct";
-                  else if (selectedIdx === idx) optionClass += " selected-wrong";
-                }
-              }
-
-              return `
-                <button class="${optionClass}" data-opt-idx="${idx}">
-                  <span class="test-option-prefix">${String.fromCharCode(65 + idx)}</span>
-                  <span>${opt}</span>
-                </button>
-              `;
-            }).join("")}
-          </div>
-
-          ${!isExam && quantUserAnswers[quantCurrentQIndex] !== undefined ? `
-            <div class="test-feedback-box ${quantUserAnswers[quantCurrentQIndex] === qData.correct ? "correct" : "wrong"}">
-              <strong>${quantUserAnswers[quantCurrentQIndex] === qData.correct ? "✓ Correct Answer!" : "✗ Incorrect"}</strong>
-              <p style="margin-top: 4px;">${qData.exp}</p>
+        <div class="live-test-wrapper">
+          <div class="live-test-header">
+            <div class="live-test-header-left">
+              <div class="live-test-counter-num">${quantCurrentQIndex + 1} of ${totalQ}</div>
+              <div class="live-test-chapter-name" style="color:#2563eb;">${qData.chName || "Quantitative Aptitude"}</div>
             </div>
-          ` : ""}
-        </div>
+            <div class="live-test-header-right">
+              ${isExam ? `
+                <div class="live-test-timer-badge">
+                  <i class="fa-regular fa-clock"></i>
+                  <span id="quant-test-timer-val">--:--</span>
+                </div>
+              ` : ""}
+              <button class="btn-leave-test" id="quant-test-exit-btn">Leave</button>
+            </div>
+          </div>
 
-        <div class="test-nav-actions">
-          <button class="btn-wizard btn-prev" id="quant-test-btn-prev" ${quantCurrentQIndex === 0 ? "disabled" : ""}>Previous</button>
-          ${quantCurrentQIndex < totalQ - 1 ? `
-            <button class="btn-wizard btn-next" id="quant-test-btn-next" style="background:#2563eb; border-color:#2563eb;">Next Question</button>
-          ` : `
-            <button class="btn-wizard btn-next" id="quant-test-btn-finish" style="background:#2563eb; border-color:#2563eb;">Submit & View Results</button>
-          `}
+          <div class="live-test-body">
+            <div class="live-test-main-col">
+              <div class="live-q-meta-row">
+                <div class="live-q-num-badge" style="background:#2563eb;">${quantCurrentQIndex + 1}</div>
+                <div class="live-q-type-pill">Type : Single Choice Question</div>
+                <div class="live-q-menu-icon"><i class="fa-solid fa-ellipsis-vertical"></i></div>
+              </div>
+
+              <div class="live-q-text">${qData.q}</div>
+
+              <div class="live-options-list">
+                ${qData.opts.map((opt, idx) => {
+                  const selectedIdx = quantUserAnswers[quantCurrentQIndex];
+                  const isSelected = selectedIdx === idx;
+                  let optionClass = "live-option-card" + (isSelected ? " selected" : "");
+                  if (selectedIdx !== undefined && !isExam) {
+                    if (idx === qData.correct) optionClass += " option-correct";
+                    else if (isSelected) optionClass += " option-wrong";
+                  }
+
+                  return `
+                    <div class="${optionClass}" data-opt-idx="${idx}">
+                      <div class="live-option-num">${idx + 1}</div>
+                      <div class="live-option-text">${opt}</div>
+                      <div class="live-option-radio">
+                        <span class="radio-outer"><span class="radio-inner"></span></span>
+                      </div>
+                    </div>
+                  `;
+                }).join("")}
+              </div>
+
+              ${!isExam && quantUserAnswers[quantCurrentQIndex] !== undefined ? `
+                <div class="live-feedback-box ${quantUserAnswers[quantCurrentQIndex] === qData.correct ? "correct" : "wrong"}">
+                  <strong>${quantUserAnswers[quantCurrentQIndex] === qData.correct ? "✓ Correct Answer!" : "✗ Incorrect"}</strong>
+                  <p style="margin-top: 4px;">${qData.exp}</p>
+                </div>
+              ` : ""}
+
+              <div class="live-test-footer">
+                <button class="btn-live-prev" id="quant-test-btn-prev" ${quantCurrentQIndex === 0 ? "disabled" : ""} style="border-color:#2563eb; color:#2563eb;">Previous</button>
+                <button class="btn-live-next" id="quant-test-btn-next" style="background:#2563eb; border-color:#2563eb;">${quantCurrentQIndex === totalQ - 1 ? "Submit & View Results" : "Save & Next"}</button>
+              </div>
+            </div>
+
+            <div class="live-test-sidebar">
+              <div class="palette-summary-box">
+                <div class="palette-status-pill answered">
+                  <span class="status-num">${answeredCount}</span>
+                  <span>Answered</span>
+                </div>
+                <div class="palette-status-pill skipped">
+                  <span class="status-num" style="background:#2563eb;">${skippedCount}</span>
+                  <span>Skipped</span>
+                </div>
+                <div class="palette-status-pill not-visited">
+                  <span class="status-num">${notVisitedCount}</span>
+                  <span>Not Visited</span>
+                </div>
+              </div>
+
+              <div class="palette-grid-container">
+                ${Array.from({ length: totalQ }, (_, i) => {
+                  let btnClass = "palette-grid-btn";
+                  if (i === quantCurrentQIndex) btnClass += " active-current";
+                  if (quantUserAnswers[i] !== undefined) btnClass += " status-answered";
+                  else if (quantVisitedQuestions.has(i)) btnClass += " status-skipped";
+                  else btnClass += " status-not-visited";
+
+                  return `
+                    <button class="${btnClass}" data-q-idx="${i}">
+                      <span class="palette-btn-num">${i + 1}</span>
+                      <span class="palette-btn-dot" ${quantVisitedQuestions.has(i) && quantUserAnswers[i] === undefined ? 'style="background:#2563eb;"' : ""}></span>
+                    </button>
+                  `;
+                }).join("")}
+              </div>
+            </div>
+          </div>
         </div>
       `;
 
       quantTestSessionContainer.innerHTML = html;
 
-      document.getElementById("quant-test-exit-btn").addEventListener("click", exitQuantTestSession);
+      const exitBtn = document.getElementById("quant-test-exit-btn");
+      if (exitBtn) exitBtn.addEventListener("click", exitQuantTestSession);
 
-      const optBtns = quantTestSessionContainer.querySelectorAll(".test-option-btn");
-      optBtns.forEach((btn) => {
-        btn.addEventListener("click", () => {
+      const optBtns = quantTestSessionContainer.querySelectorAll(".live-option-card");
+      optBtns.forEach((card) => {
+        card.addEventListener("click", () => {
           if (!isExam && quantUserAnswers[quantCurrentQIndex] !== undefined) return;
-          const optIdx = parseInt(btn.getAttribute("data-opt-idx"));
+          const optIdx = parseInt(card.getAttribute("data-opt-idx"));
           quantUserAnswers[quantCurrentQIndex] = optIdx;
+          renderQuantCurrentQuestion();
+        });
+      });
+
+      const paletteBtns = quantTestSessionContainer.querySelectorAll(".palette-grid-btn");
+      paletteBtns.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const qIdx = parseInt(btn.getAttribute("data-q-idx"));
+          quantCurrentQIndex = qIdx;
+          quantVisitedQuestions.add(quantCurrentQIndex);
           renderQuantCurrentQuestion();
         });
       });
@@ -1623,6 +1837,7 @@ document.addEventListener("DOMContentLoaded", () => {
         navPrev.addEventListener("click", () => {
           if (quantCurrentQIndex > 0) {
             quantCurrentQIndex--;
+            quantVisitedQuestions.add(quantCurrentQIndex);
             renderQuantCurrentQuestion();
           }
         });
@@ -1633,14 +1848,12 @@ document.addEventListener("DOMContentLoaded", () => {
         navNext.addEventListener("click", () => {
           if (quantCurrentQIndex < totalQ - 1) {
             quantCurrentQIndex++;
+            quantVisitedQuestions.add(quantCurrentQIndex);
             renderQuantCurrentQuestion();
+          } else {
+            finishQuantTestSession();
           }
         });
-      }
-
-      const navFinish = document.getElementById("quant-test-btn-finish");
-      if (navFinish) {
-        navFinish.addEventListener("click", finishQuantTestSession);
       }
     }
 
@@ -1648,6 +1861,8 @@ document.addEventListener("DOMContentLoaded", () => {
       if (quantTimerInterval) clearInterval(quantTimerInterval);
       quantTestSessionContainer.classList.add("hidden");
       quantPracticeWizardCard.classList.remove("hidden");
+      const quantFocusHeader = document.querySelector("#view-test-quantitative .test-focus-header");
+      if (quantFocusHeader) quantFocusHeader.classList.remove("hidden");
     }
 
     function finishQuantTestSession() {

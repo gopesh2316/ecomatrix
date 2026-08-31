@@ -478,7 +478,8 @@
                       class="custom-q-input">
                     <span class="custom-input-unit">Questions</span>
                   </div>
-                  <div class="custom-input-hint"><i class="fa-solid fa-circle-info"></i> Enter any number from 5 to 100</div>
+                  <div class="custom-input-hint"><i class="fa-solid fa-circle-info"></i> Enter any number from 5 to 100
+                  </div>
                 </div>
               </div>
 
@@ -493,7 +494,10 @@
                 </div>
                 <div class="pref-options-row" id="pref-language" style="margin-top: 1.2rem;">
                   <button class="pref-btn active" data-value="english">English</button>
-                  <button class="pref-btn" data-value="hindi">Hindi</button>
+                  <button class="pref-btn disabled" data-value="hindi" disabled>
+                    <span>Hindi</span>
+                    <span class="pref-btn-sub" style="font-size: 0.68rem; margin-top: 2px;">coming soon</span>
+                  </button>
                 </div>
               </div>
 
@@ -510,8 +514,10 @@
                   <div class="mode-card active" data-value="practice">
                     <div class="mode-card-icon">
                       <svg class="mode-card-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 20h9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M12 20h9" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                          stroke-linejoin="round" />
+                        <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" stroke="currentColor"
+                          stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                       </svg>
                     </div>
                     <div class="mode-card-content">
@@ -522,9 +528,12 @@
                   <div class="mode-card" data-value="exam">
                     <div class="mode-card-icon">
                       <svg class="mode-card-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        <rect x="8" y="2" width="8" height="4" rx="1" ry="1" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M9 14l2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"
+                          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        <rect x="8" y="2" width="8" height="4" rx="1" ry="1" stroke="currentColor" stroke-width="2"
+                          stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M9 14l2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                          stroke-linejoin="round" />
                       </svg>
                     </div>
                     <div class="mode-card-content">
@@ -542,54 +551,90 @@
                 </div>
 
                 <div class="start-test-summary-card">
-                  <div class="summary-section-title">
-                    <i class="fa-solid fa-clipboard-list" style="color: #7c3aed;"></i>
-                    Practice Session Configuration
-                  </div>
-
                   <div class="summary-grid">
                     <div class="summary-item-card">
-                      <span class="summary-item-label">Subject</span>
-                      <span class="summary-item-val"><i class="fa-solid fa-chart-pie" style="color:#7c3aed;"></i>
-                        Business Economics</span>
-                    </div>
-
-                    <div class="summary-item-card">
-                      <span class="summary-item-label">Question Count</span>
+                      <div class="summary-item-header">
+                        <svg class="summary-item-svg" viewBox="0 0 24 24" fill="none"
+                          xmlns="http://www.w3.org/2000/svg">
+                          <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                          <rect x="9" y="3" width="6" height="4" rx="1" stroke="currentColor" stroke-width="2" />
+                          <path d="M9 12h6M9 16h4" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                        </svg>
+                        <span class="summary-item-label">Question</span>
+                      </div>
                       <span class="summary-item-val" id="summary-qcount">10 Questions</span>
                     </div>
 
                     <div class="summary-item-card">
-                      <span class="summary-item-label">Difficulty</span>
+                      <div class="summary-item-header">
+                        <svg class="summary-item-svg" viewBox="0 0 24 24" fill="none"
+                          xmlns="http://www.w3.org/2000/svg">
+                          <path
+                            d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                          <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2" />
+                        </svg>
+                        <span class="summary-item-label">Difficulty</span>
+                      </div>
                       <span class="summary-item-val" id="summary-difficulty">Mix Questions</span>
                     </div>
 
                     <div class="summary-item-card">
-                      <span class="summary-item-label">Test Mode</span>
+                      <div class="summary-item-header">
+                        <svg class="summary-item-svg" viewBox="0 0 24 24" fill="none"
+                          xmlns="http://www.w3.org/2000/svg">
+                          <path d="M12 20h9" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                          <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                        <span class="summary-item-label">Test Mode</span>
+                      </div>
                       <span class="summary-item-val" id="summary-mode">Practice Mode</span>
                     </div>
 
                     <div class="summary-item-card">
-                      <span class="summary-item-label">Language</span>
+                      <div class="summary-item-header">
+                        <svg class="summary-item-svg" viewBox="0 0 24 24" fill="none"
+                          xmlns="http://www.w3.org/2000/svg">
+                          <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
+                          <path
+                            d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"
+                            stroke="currentColor" stroke-width="2" />
+                        </svg>
+                        <span class="summary-item-label">Language</span>
+                      </div>
                       <span class="summary-item-val" id="summary-language">English</span>
                     </div>
 
                     <div class="summary-item-card">
-                      <span class="summary-item-label">Estimated Time</span>
+                      <div class="summary-item-header">
+                        <svg class="summary-item-svg" viewBox="0 0 24 24" fill="none"
+                          xmlns="http://www.w3.org/2000/svg">
+                          <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2" />
+                          <path d="M12 7v5l3 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                        </svg>
+                        <span class="summary-item-label">Estimated Time</span>
+                      </div>
                       <span class="summary-item-val" id="summary-time">~10 Mins</span>
                     </div>
                   </div>
 
-                  <div class="summary-item-card" style="width: 100%;">
-                    <span class="summary-item-label" id="summary-chapters-count-lbl">Selected Chapters (0)</span>
+                  <div class="summary-item-card full-width">
+                    <div class="summary-item-header">
+                      <svg class="summary-item-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" stroke="currentColor" stroke-width="2"
+                          stroke-linecap="round" />
+                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" stroke="currentColor"
+                          stroke-width="2" stroke-linecap="round" />
+                      </svg>
+                      <span class="summary-item-label" id="summary-chapters-count-lbl">Selected Chapters (0)</span>
+                    </div>
                     <div class="summary-chapters-tags" id="summary-chapters-tags">
                       <!-- Populated dynamically -->
                     </div>
                   </div>
-
-                  <button class="btn-start-test-cta" id="btn-start-test-cta">
-                    <i class="fa-solid fa-play"></i> Start Economics Test Now
-                  </button>
                 </div>
               </div>
 
@@ -828,7 +873,8 @@
                       class="custom-q-input">
                     <span class="custom-input-unit">Questions</span>
                   </div>
-                  <div class="custom-input-hint"><i class="fa-solid fa-circle-info"></i> Enter any number from 5 to 100</div>
+                  <div class="custom-input-hint"><i class="fa-solid fa-circle-info"></i> Enter any number from 5 to 100
+                  </div>
                 </div>
               </div>
 
@@ -843,7 +889,10 @@
                 </div>
                 <div class="pref-options-row" id="quant-pref-language" style="margin-top: 1.2rem;">
                   <button class="pref-btn active" data-value="english">English</button>
-                  <button class="pref-btn" data-value="hindi">Hindi</button>
+                  <button class="pref-btn disabled" data-value="hindi" disabled>
+                    <span>Hindi</span>
+                    <span class="pref-btn-sub" style="font-size: 0.68rem; margin-top: 2px;">coming soon</span>
+                  </button>
                 </div>
               </div>
 
@@ -860,8 +909,10 @@
                   <div class="mode-card active" data-value="practice">
                     <div class="mode-card-icon">
                       <svg class="mode-card-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 20h9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M12 20h9" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                          stroke-linejoin="round" />
+                        <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" stroke="currentColor"
+                          stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                       </svg>
                     </div>
                     <div class="mode-card-content">
@@ -872,9 +923,12 @@
                   <div class="mode-card" data-value="exam">
                     <div class="mode-card-icon">
                       <svg class="mode-card-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        <rect x="8" y="2" width="8" height="4" rx="1" ry="1" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M9 14l2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"
+                          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        <rect x="8" y="2" width="8" height="4" rx="1" ry="1" stroke="currentColor" stroke-width="2"
+                          stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M9 14l2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                          stroke-linejoin="round" />
                       </svg>
                     </div>
                     <div class="mode-card-content">
@@ -892,55 +946,92 @@
                 </div>
 
                 <div class="start-test-summary-card">
-                  <div class="summary-section-title">
-                    <i class="fa-solid fa-calculator" style="color: #3b82f6;"></i>
-                    Quantitative Aptitude Session Configuration
-                  </div>
-
                   <div class="summary-grid">
                     <div class="summary-item-card">
-                      <span class="summary-item-label">Subject</span>
-                      <span class="summary-item-val"><i class="fa-solid fa-calculator" style="color:#3b82f6;"></i>
-                        Quantitative Aptitude</span>
-                    </div>
-
-                    <div class="summary-item-card">
-                      <span class="summary-item-label">Question Count</span>
+                      <div class="summary-item-header">
+                        <svg class="summary-item-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                          style="color:#2563eb;">
+                          <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                          <rect x="9" y="3" width="6" height="4" rx="1" stroke="currentColor" stroke-width="2" />
+                          <path d="M9 12h6M9 16h4" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                        </svg>
+                        <span class="summary-item-label">Question</span>
+                      </div>
                       <span class="summary-item-val" id="quant-summary-qcount">10 Questions</span>
                     </div>
 
                     <div class="summary-item-card">
-                      <span class="summary-item-label">Difficulty</span>
+                      <div class="summary-item-header">
+                        <svg class="summary-item-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                          style="color:#2563eb;">
+                          <path
+                            d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                          <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2" />
+                        </svg>
+                        <span class="summary-item-label">Difficulty</span>
+                      </div>
                       <span class="summary-item-val" id="quant-summary-difficulty">Mix Questions</span>
                     </div>
 
                     <div class="summary-item-card">
-                      <span class="summary-item-label">Test Mode</span>
+                      <div class="summary-item-header">
+                        <svg class="summary-item-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                          style="color:#2563eb;">
+                          <path d="M12 20h9" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                          <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                        <span class="summary-item-label">Test Mode</span>
+                      </div>
                       <span class="summary-item-val" id="quant-summary-mode">Practice Mode</span>
                     </div>
 
                     <div class="summary-item-card">
-                      <span class="summary-item-label">Language</span>
+                      <div class="summary-item-header">
+                        <svg class="summary-item-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                          style="color:#2563eb;">
+                          <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
+                          <path
+                            d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"
+                            stroke="currentColor" stroke-width="2" />
+                        </svg>
+                        <span class="summary-item-label">Language</span>
+                      </div>
                       <span class="summary-item-val" id="quant-summary-language">English</span>
                     </div>
 
                     <div class="summary-item-card">
-                      <span class="summary-item-label">Estimated Time</span>
+                      <div class="summary-item-header">
+                        <svg class="summary-item-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                          style="color:#2563eb;">
+                          <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2" />
+                          <path d="M12 7v5l3 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                        </svg>
+                        <span class="summary-item-label">Estimated Time</span>
+                      </div>
                       <span class="summary-item-val" id="quant-summary-time">~15 Mins</span>
                     </div>
                   </div>
 
-                  <div class="summary-item-card" style="width: 100%;">
-                    <span class="summary-item-label" id="quant-summary-chapters-count-lbl">Selected Chapters (0)</span>
+                  <div class="summary-item-card full-width">
+                    <div class="summary-item-header">
+                      <svg class="summary-item-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                        style="color:#2563eb;">
+                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" stroke="currentColor" stroke-width="2"
+                          stroke-linecap="round" />
+                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" stroke="currentColor"
+                          stroke-width="2" stroke-linecap="round" />
+                      </svg>
+                      <span class="summary-item-label" id="quant-summary-chapters-count-lbl">Selected Chapters
+                        (0)</span>
+                    </div>
                     <div class="summary-chapters-tags" id="quant-summary-chapters-tags">
                       <!-- Populated dynamically -->
                     </div>
                   </div>
-
-                  <button class="btn-start-test-cta" id="quant-btn-start-test-cta"
-                    style="background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);">
-                    <i class="fa-solid fa-play"></i> Start Math Test Now
-                  </button>
                 </div>
               </div>
 
